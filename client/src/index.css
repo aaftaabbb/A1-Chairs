@@ -1,0 +1,139 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-paper-100 text-ink-900 font-sans antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  ::selection {
+    @apply bg-rust-200 text-ink-900;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-display font-medium tracking-tight;
+  }
+}
+
+@layer components {
+  /* Small uppercase editorial label */
+  .eyebrow {
+    @apply inline-flex items-center gap-3 text-[11px] font-semibold uppercase tracking-eyebrow text-rust-600;
+  }
+
+  .h-rule {
+    @apply h-px w-10 bg-rust-400;
+  }
+
+  /* Buttons */
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 text-sm font-semibold tracking-wide transition-all duration-200 cursor-pointer;
+  }
+
+  .btn-primary {
+    @apply btn bg-rust-700 text-paper-50 px-7 py-3.5 hover:bg-ink-900 shadow-soft;
+  }
+
+  .btn-dark {
+    @apply btn bg-ink-900 text-paper-50 px-7 py-3.5 hover:bg-rust-700 shadow-soft;
+  }
+
+  .btn-outline {
+    @apply btn border border-ink-900/25 text-ink-900 px-7 py-3.5 hover:border-rust-700 hover:text-rust-700;
+  }
+
+  .btn-whatsapp {
+    @apply btn bg-[#1E9E5C] text-white px-7 py-3.5 hover:bg-[#17854D] shadow-soft;
+  }
+
+  .btn-ghost {
+    @apply btn text-rust-700 hover:text-ink-900 px-2 py-2;
+  }
+
+  /* Forms */
+  .input-field {
+    @apply w-full bg-paper-50 border border-paper-400 px-4 py-3 text-sm text-ink-900 placeholder:text-ink-300 focus:outline-none focus:border-ink-600 focus:ring-1 focus:ring-ink-600/20 transition-colors;
+  }
+
+  /* Typography helpers */
+  .section-title {
+    @apply font-display text-3xl md:text-4xl lg:text-[2.75rem] font-medium tracking-tight text-ink-900 leading-[1.1];
+  }
+
+  .section-subtitle {
+    @apply mt-4 text-ink-500 leading-relaxed max-w-xl;
+  }
+
+  /* Editorials */
+  .stat-number {
+    @apply font-display text-4xl md:text-5xl font-medium text-ink-900 tabular-nums tracking-tight;
+  }
+
+  .text-link {
+    @apply inline-flex items-center gap-2 text-sm font-semibold text-rust-700 hover:text-ink-900 transition-colors;
+  }
+
+  /* Hairline card */
+  .card-line {
+    @apply bg-white border border-paper-300;
+  }
+
+  .card-hover {
+    @apply transition-all duration-300 hover:-translate-y-1 hover:shadow-lift;
+  }
+
+  .product-card {
+    @apply bg-white border border-paper-300 transition-all duration-300;
+  }
+}
+
+/* Hide scrollbar for thumbnail rows */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Range input accent */
+input[type="range"] {
+  accent-color: #A8552C;
+}
+input[type="checkbox"],
+input[type="radio"] {
+  accent-color: #A8552C;
+}
+
+/* Dual-range slider thumbs (pointer-events re-enabled on thumbs only) */
+.slider-thumb {
+  pointer-events: none;
+}
+.slider-thumb::-webkit-slider-thumb {
+  pointer-events: auto;
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 9999px;
+  background: #221B15;
+  border: 2px solid #FBF9F5;
+  box-shadow: 0 2px 6px rgba(34,27,21,0.3);
+  cursor: pointer;
+}
+.slider-thumb::-moz-range-thumb {
+  pointer-events: auto;
+  width: 14px;
+  height: 14px;
+  border-radius: 9999px;
+  background: #221B15;
+  border: 2px solid #FBF9F5;
+  box-shadow: 0 2px 6px rgba(34,27,21,0.3);
+  cursor: pointer;
+}
