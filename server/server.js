@@ -25,6 +25,12 @@ app.use(cors());
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
 
+// Simple request logger (helps debugging on hosted deployments)
+app.use((req, res, next) => {
+  console.log(`${new Date().toISOString()} ${req.method} ${req.url}`);
+  next();
+});
+
 // Root route
 app.get('/', (req, res) => {
   res.json({ message: 'A1 Chairs API is running' });
