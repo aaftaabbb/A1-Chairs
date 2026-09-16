@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || (import.meta.env.DEV ? '/api' : 'https://a1-chairs-api.onrender.com')
+  baseURL: import.meta.env.VITE_API_URL || (import.meta.env.DEV ? '/api' : 'https://a1-chairs-api.onrender.com/api')
 });
 
 // Attach JWT token if present for admin requests
