@@ -2,6 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const dotenv = require('dotenv');
+const path = require('path');
 
 dotenv.config();
 
@@ -44,6 +45,15 @@ app.use('/api/gallery', publicGallery);
 
 // Admin routes
 app.use('/api/admin', adminRoutes);
+
+// Serve built frontend (client/dist) if present
+const distDir = path.join(__dirname, '..', 'client', 'dist');
+app.use(express.static(distDir));
+
+// SPA fallback for non-API routes
+app.get(/^(?!\/api\/).*/, (req, res) => {
+  res.sendFile(path.join(distDir, 'index.html'));
+});
 
 // 404 handler
 app.use((req, res) => {
