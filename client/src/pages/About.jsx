@@ -34,11 +34,11 @@ const About = () => {
             </p>
 
             <div className="mt-10 grid grid-cols-3 gap-px bg-paper-300 border border-paper-300 max-w-lg">
-              {[
-                { n: '10+', l: 'Years experience' },
-                { n: '500+', l: 'Chairs repaired' },
-                { n: '100%', l: 'Commitment' }
-              ].map(s => (
+{[
+                  { n: '5+', l: 'Years experience' },
+                  { n: '300+', l: 'Chairs repaired' },
+                  { n: '100%', l: 'Commitment' }
+                ].map(s => (
                 <div key={s.l} className="bg-paper-50 py-6 px-4 text-center">
                   <p className="stat-number !text-3xl">{s.n}</p>
                   <p className="mt-1.5 text-[10px] uppercase tracking-wider text-ink-400">{s.l}</p>
