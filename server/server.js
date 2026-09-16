@@ -32,10 +32,7 @@ app.use((req, res, next) => {
   next();
 });
 
-// Root route
-app.get('/', (req, res) => {
-  res.json({ message: 'A1 Chairs API is running' });
-});
+// Root route — now serves the built frontend (index.html) via static/SPA below
 
 // Public routes
 app.use('/api/products', publicProducts);
