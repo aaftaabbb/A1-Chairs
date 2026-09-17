@@ -18,6 +18,7 @@ const ProductDetail = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [activeImage, setActiveImage] = useState(0);
+  const [activeColor, setActiveColor] = useState(null);
   const [showEnquiry, setShowEnquiry] = useState(false);
 
   useEffect(() => {
