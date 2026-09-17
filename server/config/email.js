@@ -13,7 +13,7 @@ const transporter = nodemailer.createTransport({
 const sendEnquiryEmail = async (enquiry) => {
   try {
     const mailOptions = {
-      from: `"A1 Chairs Website" <${process.env.BREVO_SMTP_USER}>`,
+      from: `"A1 Chairs Website" <${process.env.EMAIL_FROM || process.env.BREVO_SMTP_USER}>`,
       to: process.env.NOTIFY_EMAIL,
       subject: `New Enquiry from ${enquiry.name}`,
       html: `
