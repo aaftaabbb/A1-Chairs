@@ -5,6 +5,7 @@ import {
   ArrowLeft, Quote, Hammer, Wrench, Timer, Truck
 } from 'lucide-react';
 import api from '../utils/api';
+import optimizeImage from '../utils/imageUtils';
 import Loader from '../components/Loader';
 import EnquiryModal from '../components/EnquiryModal';
 import ProductPlaceholder from '../components/ProductPlaceholder';
@@ -50,7 +51,7 @@ const ProductDetail = () => {
   const images = product.images && product.images.length > 0 ? product.images : [];
   const colors = product.colors && product.colors.length ? product.colors : [];
   const activeVariant = activeColor !== null && colors[activeColor] ? colors[activeColor] : null;
-  const displayImage = activeVariant?.image || images[activeImage];
+  const displayImage = optimizeImage(activeVariant?.image || images[activeImage], 1100);
   const whatsappMessage = encodeURIComponent(
     `Hello A1 Chairs! I'm interested in "${product.name}"${activeVariant ? ` (${activeVariant.name})` : ''} (₹${Number(product.price).toLocaleString('en-IN')}). Please share more details.`
   );
@@ -123,7 +124,7 @@ const ProductDetail = () => {
                     }`}
                     aria-label={`View image ${i + 1}`}
                   >
-                    <img src={img} alt="" className="w-full h-full object-cover" />
+                    <img src={optimizeImage(img, 240)} alt="" className="w-full h-full object-cover" />
                   </button>
                 ))}
               </div>
@@ -172,7 +173,7 @@ const ProductDetail = () => {
                       aria-label={`Colour ${c.name}`}
                     >
                       {c.image ? (
-                        <img src={c.image} alt={c.name} className="w-full h-full object-cover" />
+                        <img src={optimizeImage(c.image, 100)} alt={c.name} className="w-full h-full object-cover" />
                       ) : (
                         <span className="block w-full h-full bg-paper-300" />
                       )}

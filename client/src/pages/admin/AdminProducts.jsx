@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Plus, Edit, Trash2, X, Loader2, ImagePlus, Palette, CheckCircle2 } from 'lucide-react';
 import api from '../../utils/api';
+import optimizeImage from '../../utils/imageUtils';
 import AdminPageHeader from './AdminPageHeader';
 import Loader from '../../components/Loader';
 import EmptyState from '../../components/EmptyState';
@@ -253,7 +254,7 @@ const AdminProducts = () => {
                   <td className="px-5 py-3 font-medium text-gray-900">
                     <div className="flex items-center gap-3">
                       {product.images?.[0] ? (
-                        <img src={product.images[0]} alt={product.name} className="w-10 h-10 rounded-lg object-cover" />
+                        <img src={optimizeImage(product.images[0], 120)} alt={product.name} className="w-10 h-10 rounded-lg object-cover" />
                       ) : (
                         <span className="w-10 h-10 rounded-lg bg-brand-100 text-brand-700 flex items-center justify-center text-xs font-bold">A1</span>
                       )}

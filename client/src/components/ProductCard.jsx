@@ -2,10 +2,11 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowUpRight } from 'lucide-react';
 import ProductPlaceholder from './ProductPlaceholder';
+import optimizeImage from '../utils/imageUtils';
 
 const ProductCard = ({ product }) => {
   const [imgError, setImgError] = useState(false);
-  const image = product.images?.[0];
+  const image = optimizeImage(product.images?.[0], 800);
   const hasImage = image && !imgError;
   const category = product.category?.name || 'Chairs';
 

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { X } from 'lucide-react';
 import api from '../utils/api';
+import optimizeImage from '../utils/imageUtils';
 import Loader from '../components/Loader';
 import EmptyState from '../components/EmptyState';
 
@@ -59,7 +60,7 @@ const Gallery = () => {
                   className="group relative block w-full overflow-hidden bg-paper-200 border border-paper-300"
                 >
                   <img
-                    src={img.imageUrl}
+                    src={optimizeImage(img.imageUrl, 900)}
                     alt={img.caption || 'A1 Chairs work'}
                     loading="lazy"
                     className="w-full h-auto object-cover min-h-[160px] group-hover:scale-[1.03] transition-transform duration-500 ease-out"
@@ -84,7 +85,7 @@ const Gallery = () => {
         >
           <div className="max-w-4xl w-full" onClick={(e) => e.stopPropagation()}>
             <img
-              src={lightbox.imageUrl}
+              src={optimizeImage(lightbox.imageUrl, 1600)}
               alt={lightbox.caption || 'Gallery photo'}
               className="mx-auto max-h-[78vh] rounded-none object-contain border border-ink-800"
             />

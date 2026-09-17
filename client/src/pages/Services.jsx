@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { Phone, ArrowUpRight, ArrowRight, Hammer, Wrench } from 'lucide-react';
 import { BUSINESS } from '../utils/constants';
+import ChairIllustration from '../components/ChairIllustration';
 
 const Services = () => {
   return (
@@ -55,15 +56,9 @@ const Services = () => {
 
           <div className="lg:col-span-7">
             <div className="relative">
-              <div className="border border-rust-200 aspect-[4/3] bg-gradient-to-br from-paper-200 to-paper-300 flex items-center justify-center">
-                <svg width="180" height="180" viewBox="0 0 64 64" fill="none" stroke="#403529" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
-                  <rect x="16" y="26" width="32" height="26" rx="3" />
-                  <rect x="12" y="24" width="40" height="5" rx="2" />
-                  <line x1="26" y1="52" x2="22" y2="61" />
-                  <line x1="38" y1="52" x2="42" y2="61" />
-                  <line x1="21" y1="20" x2="19" y2="12" />
-                  <line x1="43" y1="20" x2="45" y2="12" />
-                </svg>
+              <div className="border border-rust-200 aspect-[4/3] bg-gradient-to-br from-paper-200 to-paper-300 flex items-center justify-center overflow-hidden">
+                <div className="absolute inset-0 opacity-[0.35] bg-[radial-gradient(60%_45%_at_50%_38%,rgba(255,255,255,0.9),transparent)]" />
+                <ChairIllustration className="relative w-[54%] text-ink-800" />
                 <span className="absolute top-6 left-6 bg-ink-900 text-paper-50 text-[10px] uppercase tracking-eyebrow px-3.5 py-2">
                   <Hammer size={12} className="inline mr-1.5 -mt-0.5" /> Manufactured here
                 </span>
@@ -76,10 +71,12 @@ const Services = () => {
         <section className="grid lg:grid-cols-12 gap-12 items-center">
           <div className="lg:col-span-7 order-2 lg:order-1">
             <div className="relative">
-              <div className="border border-moss-200 aspect-[4/3] bg-gradient-to-br from-ink-800 to-ink-950 flex items-center justify-center">
-                <svg width="160" height="160" viewBox="0 0 24 24" fill="none" stroke="#E2D9CC" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z" />
-                </svg>
+              <div className="border border-moss-200 aspect-[4/3] bg-gradient-to-br from-ink-800 to-ink-950 flex items-center justify-center overflow-hidden">
+                <div className="absolute inset-0 bg-[radial-gradient(60%_45%_at_50%_35%,rgba(216,168,126,0.12),transparent)]" />
+                <ChairIllustration className="relative w-[44%] text-paper-300/80" />
+                <span className="absolute bottom-6 right-6 w-14 h-14 rounded-full bg-rust-600 text-paper-50 flex items-center justify-center shadow-lift">
+                  <Wrench size={22} />
+                </span>
                 <span className="absolute top-6 left-6 bg-paper-50 text-ink-900 text-[10px] uppercase tracking-eyebrow px-3.5 py-2">
                   <Wrench size={12} className="inline mr-1.5 -mt-0.5" /> Repaired here
                 </span>
@@ -116,6 +113,39 @@ const Services = () => {
               <Link to="/contact" className="btn-dark"><Phone size={15} /> Book a Repair</Link>
               <a href={BUSINESS.whatsappUrl} target="_blank" rel="noreferrer" className="btn-outline">WhatsApp Us</a>
             </div>
+          </div>
+        </section>
+
+        {/* How it works — 3 steps */}
+        <section>
+          <div className="grid lg:grid-cols-12 gap-10">
+            <div className="lg:col-span-4">
+              <span className="eyebrow"><span className="h-rule" /> How it works</span>
+              <h2 className="section-title mt-4">Simple from<br />start to seat.</h2>
+            </div>
+
+            <div className="lg:col-span-8 grid sm:grid-cols-3 gap-px bg-paper-300 border border-paper-300">
+              {[
+                { n: '01', t: 'Tell us what you need', d: 'A photo on WhatsApp or a quick call is enough. For new work, share the room and the budget.' },
+                { n: '02', t: 'We quote you straight', d: 'Clear estimate up front — fabric, foam, labour, delivery. No surprises on the bill.' },
+                { n: '03', t: 'Back to you, done right', d: 'Built or repaired and tested before it leaves. Most repairs are finished within days.' }
+              ].map(s => (
+                <div key={s.n} className="bg-paper-50 p-8 sm:p-10">
+                  <span className="font-display text-xl text-rust-600 tabular-nums">{s.n}</span>
+                  <h3 className="mt-3 font-display text-xl text-ink-900">{s.t}</h3>
+                  <p className="mt-2 text-sm text-ink-500 leading-relaxed">{s.d}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="mt-10 flex flex-wrap items-center justify-between gap-4 border-t border-paper-300 pt-7">
+            <p className="text-[11px] uppercase tracking-wider text-ink-400">
+              Serving Vasai · Palghar · Virar · Naigaon · Mumbai suburbs
+            </p>
+            <p className="text-sm text-ink-600">
+              Most repairs — <span className="font-semibold text-ink-900">within days, not weeks</span>
+            </p>
           </div>
         </section>
 
