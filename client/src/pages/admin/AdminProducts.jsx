@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Plus, Edit, Trash2, X, Loader2, ImagePlus, CheckCircle2 } from 'lucide-react';
+import { Plus, Edit, Trash2, X, Loader2, ImagePlus, Palette, CheckCircle2 } from 'lucide-react';
 import api from '../../utils/api';
 import AdminPageHeader from './AdminPageHeader';
 import Loader from '../../components/Loader';
@@ -14,7 +14,8 @@ const emptyForm = {
   featured: false,
   inStock: true,
   existingImages: [],
-  newImages: []
+  newImages: [],
+  colors: []
 };
 
 const AdminProducts = () => {
@@ -72,9 +73,33 @@ const AdminProducts = () => {
       featured: product.featured,
       inStock: product.inStock,
       existingImages: product.images || [],
-      newImages: []
+      newImages: [],
+      colors: (product.colors || []).map((c, i) => ({
+        key: `existing-${i}`,
+        name: c.name,
+        image: c.image || '',
+        file: null
+      }))
     });
     setShowForm(true);
+  };
+
+  const addColor = () => {
+    setForm(prev => ({
+      ...prev,
+      colors: [...prev.colors, { key: `new-${Date.now()}-${Math.random()}`, name: '', image: '', file: null }]
+    }));
+  };
+
+  const updateColor = (key, patch) => {
+    setForm(prev => ({
+      ...prev,
+      colors: prev.colors.map(r => (r.key === key ? { ...r, ...patch } : r))
+    }));
+  };
+
+  const removeColor = (key) => {
+    setForm(prev => ({ ...prev, colors: prev.colors.filter(r => r.key !== key) }));
   };
 
   const handleInput = (e) => {
@@ -120,6 +145,22 @@ const AdminProducts = () => {
       fd.append('featured', String(form.featured));
       fd.append('inStock', String(form.inStock));
       fd.append('existingImages', JSON.stringify(form.existingImages));
+
+      const existingColors = [];
+      const newColors = [];
+      const colorFiles = [];
+      form.colors.forEach(r => {
+        if (!r.name.trim()) return;
+        if (r.file) {
+          newColors.push({ name: r.name.trim() });
+          colorFiles.push(r.file);
+        } else if (r.image) {
+          existingColors.push({ name: r.name.trim(), image: r.image });
+        }
+      });
+      fd.append('existingColors', JSON.stringify(existingColors));
+      fd.append('newColors', JSON.stringify(newColors));
+      colorFiles.forEach(file => fd.append('colorImages', file));
 
       form.newImages.forEach(file => fd.append('images', file));
 
@@ -339,6 +380,67 @@ const AdminProducts = () => {
                   Upload images (max 10MB each)
                   <input type="file" accept="image/*" multiple onChange={handleFiles} className="hidden" />
                 </label>
+              </div>
+
+              {/* Colour variants */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Colour Variants</label>
+                <p className="text-xs text-gray-400 mb-3">
+                  Optional. Add a colour and its photo — customers click the colour on the product page to see that image, like Amazon/Flipkart.
+                </p>
+
+                {form.colors.length > 0 && (
+                  <div className="space-y-2 mb-3">
+                    {form.colors.map(row => (
+                      <div key={row.key} className="flex items-center gap-3 border border-gray-200 rounded-xl p-2.5">
+                        <div className="w-12 h-12 shrink-0 rounded-lg overflow-hidden bg-gray-100 flex items-center justify-center">
+                          {row.file || row.image ? (
+                            <img
+                              src={row.file ? URL.createObjectURL(row.file) : row.image}
+                              alt={row.name}
+                              className="w-full h-full object-cover"
+                            />
+                          ) : (
+                            <Palette size={18} className="text-gray-300" />
+                          )}
+                        </div>
+                        <input
+                          className="input-field flex-1"
+                          value={row.name}
+                          onChange={e => updateColor(row.key, { name: e.target.value })}
+                          placeholder="Colour name — e.g. Black"
+                        />
+                        <label className="shrink-0 p-2 rounded-lg text-navy-600 hover:bg-navy-50 cursor-pointer" title="Upload colour photo">
+                          <ImagePlus size={17} />
+                          <input
+                            type="file" accept="image/*" className="hidden"
+                            onChange={e => {
+                              const f = e.target.files?.[0];
+                              if (f) updateColor(row.key, { file: f });
+                              e.target.value = '';
+                            }}
+                          />
+                        </label>
+                        <button
+                          type="button"
+                          onClick={() => removeColor(row.key)}
+                          className="shrink-0 p-2 rounded-lg text-red-600 hover:bg-red-50"
+                          title="Remove colour"
+                        >
+                          <Trash2 size={16} />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                <button
+                  type="button"
+                  onClick={addColor}
+                  className="flex items-center justify-center gap-2 w-full border-2 border-dashed border-gray-300 rounded-lg px-4 py-3 text-sm text-gray-500 hover:border-brand-500 hover:bg-brand-50 hover:text-gray-700 transition-colors"
+                >
+                  <Plus size={16} /> Add a colour
+                </button>
               </div>
 
               <div className="flex gap-6">

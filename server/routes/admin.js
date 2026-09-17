@@ -75,7 +75,10 @@ router.post('/login', [
 // --- Product Routes ---
 
 // POST /api/admin/products
-router.post('/products', auth, upload.array('images', 10), async (req, res) => {
+router.post('/products', auth, upload.fields([
+  { name: 'images', maxCount: 10 },
+  { name: 'colorImages', maxCount: 12 }
+]), async (req, res) => {
   try {
     const { name, category, price, description, material, inStock, featured } = req.body;
 
@@ -89,9 +92,21 @@ router.post('/products', auth, upload.array('images', 10), async (req, res) => {
     }
 
     let imageUrls = [];
-    if (req.files && req.files.length > 0) {
-      const uploadPromises = req.files.map(file => uploadToCloudinary(file.buffer));
+    if (req.files && req.files.images && req.files.images.length > 0) {
+      const uploadPromises = req.files.images.map(file => uploadToCloudinary(file.buffer));
       imageUrls = await Promise.all(uploadPromises);
+    }
+
+    const existingColors = req.body.existingColors ? JSON.parse(req.body.existingColors) : [];
+    const newColors = req.body.newColors ? JSON.parse(req.body.newColors) : [];
+    const colorImageFiles = (req.files && req.files.colorImages) || [];
+    const colors = existingColors.filter(c => c && c.image);
+    for (let i = 0; i < newColors.length && i < colorImageFiles.length; i++) {
+      const file = colorImageFiles[i];
+      if (file && newColors[i] && newColors[i].name) {
+        const url = await uploadToCloudinary(file.buffer);
+        colors.push({ name: newColors[i].name.trim(), image: url });
+      }
     }
 
     const product = new Product({
@@ -99,6 +114,7 @@ router.post('/products', auth, upload.array('images', 10), async (req, res) => {
       category,
       price: parseFloat(price),
       images: imageUrls,
+      colors,
       description: description || '',
       material: material || '',
       inStock: inStock !== 'false',
@@ -114,7 +130,10 @@ router.post('/products', auth, upload.array('images', 10), async (req, res) => {
 });
 
 // PUT /api/admin/products/:id
-router.put('/products/:id', auth, upload.array('images', 10), async (req, res) => {
+router.put('/products/:id', auth, upload.fields([
+  { name: 'images', maxCount: 10 },
+  { name: 'colorImages', maxCount: 12 }
+]), async (req, res) => {
   try {
     const product = await Product.findById(req.params.id);
     if (!product) {
@@ -135,8 +154,8 @@ router.put('/products/:id', auth, upload.array('images', 10), async (req, res) =
       imageUrls = JSON.parse(existingImages);
     }
 
-    if (req.files && req.files.length > 0) {
-      const uploadPromises = req.files.map(file => uploadToCloudinary(file.buffer));
+    if (req.files && req.files.images && req.files.images.length > 0) {
+      const uploadPromises = req.files.images.map(file => uploadToCloudinary(file.buffer));
       const newUrls = await Promise.all(uploadPromises);
       imageUrls = [...imageUrls, ...newUrls];
     }
@@ -148,7 +167,22 @@ router.put('/products/:id', auth, upload.array('images', 10), async (req, res) =
     if (material !== undefined) product.material = material;
     if (inStock !== undefined) product.inStock = inStock !== 'false';
     if (featured !== undefined) product.featured = featured === 'true';
-    if (req.files || existingImages) product.images = imageUrls;
+    if (req.files && (req.files.images || req.files.colorImages) || existingImages) product.images = imageUrls;
+
+    if (req.body.existingColors !== undefined || req.body.newColors !== undefined) {
+      const existingColors = req.body.existingColors ? JSON.parse(req.body.existingColors) : [];
+      const newColors = req.body.newColors ? JSON.parse(req.body.newColors) : [];
+      const colorImageFiles = (req.files && req.files.colorImages) || [];
+      const colors = existingColors.filter(c => c && c.image);
+      for (let i = 0; i < newColors.length && i < colorImageFiles.length; i++) {
+        const file = colorImageFiles[i];
+        if (file && newColors[i] && newColors[i].name) {
+          const url = await uploadToCloudinary(file.buffer);
+          colors.push({ name: newColors[i].name.trim(), image: url });
+        }
+      }
+      product.colors = colors;
+    }
 
     await product.save();
     const populated = await product.populate('category', 'name slug');

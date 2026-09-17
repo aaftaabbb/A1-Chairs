@@ -52,6 +52,22 @@ const ProductCard = ({ product }) => {
         <h3 className="mt-2 font-display text-[17px] leading-snug text-ink-900 line-clamp-1">
           {product.name}
         </h3>
+        {Array.isArray(product.colors) && product.colors.length > 0 && (
+          <div className="mt-3 flex items-center gap-1.5">
+            {product.colors.slice(0, 4).map((c, i) => (
+              <span key={i} className="w-3.5 h-3.5 rounded-full overflow-hidden border border-ink-900/10" title={c.name}>
+                {c.image ? (
+                  <img src={c.image} alt={c.name} className="w-full h-full object-cover" />
+                ) : (
+                  <span className="block w-full h-full bg-paper-300" />
+                )}
+              </span>
+            ))}
+            <span className="ml-1.5 text-[10px] uppercase tracking-wider text-ink-400">
+              {product.colors.length} colour{product.colors.length > 1 ? 's' : ''}
+            </span>
+          </div>
+        )}
         <div className="mt-3 pt-3 border-t border-paper-200 flex items-center justify-between">
           <span className="font-display text-lg tabular-nums text-ink-900">
             ₹{Number(product.price).toLocaleString('en-IN')}

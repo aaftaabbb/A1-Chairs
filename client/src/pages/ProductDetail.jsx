@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import {
-  ChevronLeft, ChevronRight, Phone, MessageCircle,
+  ChevronLeft, ChevronRight, Phone, MessageCircle, Check,
   ArrowLeft, Quote, Hammer, Wrench, Timer, Truck
 } from 'lucide-react';
 import api from '../utils/api';
@@ -48,8 +48,11 @@ const ProductDetail = () => {
   }
 
   const images = product.images && product.images.length > 0 ? product.images : [];
+  const colors = product.colors && product.colors.length ? product.colors : [];
+  const activeVariant = activeColor !== null && colors[activeColor] ? colors[activeColor] : null;
+  const displayImage = activeVariant?.image || images[activeImage];
   const whatsappMessage = encodeURIComponent(
-    `Hello A1 Chairs! I'm interested in "${product.name}" (₹${Number(product.price).toLocaleString('en-IN')}). Please share more details.`
+    `Hello A1 Chairs! I'm interested in "${product.name}"${activeVariant ? ` (${activeVariant.name})` : ''} (₹${Number(product.price).toLocaleString('en-IN')}). Please share more details.`
   );
 
   const nextImage = () => setActiveImage(prev => (prev + 1) % images.length);
@@ -71,17 +74,17 @@ const ProductDetail = () => {
           {/* Gallery */}
           <div className="lg:col-span-7">
             <div className="relative bg-paper-200 border border-paper-300 aspect-square overflow-hidden">
-              {images.length > 0 ? (
+              {displayImage ? (
                 <img
-                  src={images[activeImage]}
-                  alt={`${product.name} — view ${activeImage + 1}`}
+                  src={displayImage}
+                  alt={activeVariant ? `${product.name} — ${activeVariant.name}` : `${product.name} — view ${activeImage + 1}`}
                   className="w-full h-full object-cover"
                 />
               ) : (
                 <ProductPlaceholder className="w-full h-full" />
               )}
 
-              {images.length > 1 && (
+              {images.length > 1 && !activeVariant && (
                 <>
                   <button
                     onClick={prevImage}
@@ -101,7 +104,11 @@ const ProductDetail = () => {
               )}
 
               <span className="absolute top-5 left-5 bg-ink-900/85 text-paper-50 text-[10px] uppercase tracking-eyebrow px-3 py-1.5">
-                {images.length > 0 ? `${activeImage + 1} / ${images.length}` : 'To be photographed'}
+                {activeVariant
+                  ? `Colour — ${activeVariant.name}`
+                  : images.length > 0
+                    ? `${activeImage + 1} / ${images.length}`
+                    : 'To be photographed'}
               </span>
             </div>
 
@@ -110,9 +117,9 @@ const ProductDetail = () => {
                 {images.map((img, i) => (
                   <button
                     key={i}
-                    onClick={() => setActiveImage(i)}
+                    onClick={() => { setActiveImage(i); setActiveColor(null); }}
                     className={`shrink-0 w-24 h-24 lg:w-28 lg:h-28 bg-paper-200 border overflow-hidden transition-colors ${
-                      activeImage === i ? 'border-ink-900' : 'border-paper-300 hover:border-ink-400'
+                      activeImage === i && !activeVariant ? 'border-ink-900' : 'border-paper-300 hover:border-ink-400'
                     }`}
                     aria-label={`View image ${i + 1}`}
                   >
@@ -143,6 +150,42 @@ const ProductDetail = () => {
                 {product.inStock ? 'In stock' : 'On enquiry'}
               </span>
             </div>
+
+            {/* Colour variants */}
+            {colors.length > 0 && (
+              <div className="mt-8">
+                <div className="flex items-center justify-between">
+                  <span className="text-[11px] uppercase tracking-eyebrow text-ink-900">Colour</span>
+                  <span className="text-sm text-ink-600 font-medium">
+                    {activeVariant ? activeVariant.name : 'Select a shade'}
+                  </span>
+                </div>
+                <div className="mt-3 flex flex-wrap gap-3">
+                  {colors.map((c, i) => (
+                    <button
+                      key={i}
+                      onClick={() => setActiveColor(activeColor === i ? null : i)}
+                      className={`relative w-11 h-11 rounded-full overflow-hidden border-2 transition-colors ${
+                        activeColor === i ? 'border-ink-900' : 'border-paper-300 hover:border-ink-400'
+                      }`}
+                      title={c.name}
+                      aria-label={`Colour ${c.name}`}
+                    >
+                      {c.image ? (
+                        <img src={c.image} alt={c.name} className="w-full h-full object-cover" />
+                      ) : (
+                        <span className="block w-full h-full bg-paper-300" />
+                      )}
+                      {activeColor === i && (
+                        <span className="absolute inset-0 bg-ink-900/30 flex items-center justify-center">
+                          <Check size={16} className="text-paper-50" strokeWidth={3} />
+                        </span>
+                      )}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
 
             {/* Meta */}
             <dl className="mt-10">
