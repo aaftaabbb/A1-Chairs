@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useParams, Link, useNavigate } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import {
   ChevronLeft, ChevronRight, Phone, MessageCircle, Check,
   ArrowLeft, Quote, Hammer, Wrench, Timer, Truck
@@ -13,7 +13,6 @@ import { BUSINESS } from '../utils/constants';
 
 const ProductDetail = () => {
   const { id } = useParams();
-  const navigate = useNavigate();
 
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -38,12 +37,21 @@ const ProductDetail = () => {
 
   if (error) {
     return (
-      <div className="max-w-3xl mx-auto px-6 py-28 text-center">
-        <span className="font-display italic text-2xl text-ink-300">"{error}"</span>
-        <p className="mt-4 text-ink-500">This piece may have been moved or retired.</p>
-        <button onClick={() => navigate('/products')} className="btn-dark mt-7">
-          <ArrowLeft size={16} className="mr-2" /> Back to Products
-        </button>
+      <div className="bg-paper-100 min-h-screen">
+        <div className="max-w-2xl mx-auto px-6 py-28 text-center">
+          <span className="font-display text-3xl text-ink-900">"{error}"</span>
+          <p className="mt-4 text-ink-600 leading-relaxed">
+            This piece may have been moved or retired from the collection.
+          </p>
+          <div className="mt-8 flex flex-wrap justify-center gap-4">
+            <Link to="/products" className="btn-dark">
+              <ArrowLeft size={16} className="mr-2" /> Browse the Collection
+            </Link>
+            <a href={`tel:+91${BUSINESS.phone}`} className="btn-outline">
+              <Phone size={15} /> Call the workshop
+            </a>
+          </div>
+        </div>
       </div>
     );
   }
