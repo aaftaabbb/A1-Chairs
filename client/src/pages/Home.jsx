@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
-  Phone, ArrowUpRight, ArrowRight, MapPin, Quote, Hammer, Wrench
+  Phone, ArrowUpRight, ArrowRight, MapPin, Quote, Hammer, Wrench,
+  Scissors, Ruler, Truck, Layers, Package
 } from 'lucide-react';
 import api from '../utils/api';
 import ProductCard from '../components/ProductCard';
@@ -103,19 +104,48 @@ const Home = () => {
                   <div className="relative w-full h-full overflow-hidden rounded-t-[240px] bg-gradient-to-b from-paper-200 to-paper-300 border border-paper-300 flex items-center justify-center">
                     <div className="absolute inset-0 opacity-[0.35] bg-[radial-gradient(60%_45%_at_50%_38%,rgba(255,255,255,0.9),transparent)]" />
                     <svg
-                      className="relative w-[58%] text-ink-800"
-                      viewBox="0 0 64 64" fill="none"
-                      stroke="currentColor" strokeWidth="1.3"
+                      className="relative w-[64%] text-ink-800"
+                      viewBox="0 0 96 96" fill="none"
+                      stroke="currentColor" strokeWidth="1.4"
                       strokeLinecap="round" strokeLinejoin="round"
                     >
-                      <rect x="16" y="26" width="32" height="26" rx="3" strokeWidth="1.6" />
-                      <rect x="12" y="24" width="40" height="5" rx="2" strokeWidth="1.6" />
-                      <line x1="26" y1="52" x2="22" y2="61" strokeWidth="1.6" />
-                      <line x1="38" y1="52" x2="42" y2="61" strokeWidth="1.6" />
-                      <line x1="21" y1="20" x2="19" y2="12" strokeWidth="1.6" />
-                      <line x1="43" y1="20" x2="45" y2="12" strokeWidth="1.6" />
-                      <path d="M15 30c4-1.5 9-1.5 13 0" strokeWidth="1.2" opacity="0.55" />
-                      <path d="M49 30c-4-1.5-9-1.5-13 0" strokeWidth="1.2" opacity="0.55" />
+                      {/* pinstripe texture */}
+                      <g strokeWidth="0.6" opacity="0.14">
+                        {[22, 30, 38, 46, 54, 62, 70].map(x => (
+                          <line key={x} x1={x} y1="8" x2={x} y2="90" />
+                        ))}
+                      </g>
+                      {/* soft ground shadow */}
+                      <ellipse cx="48" cy="91" rx="27" ry="3.2" stroke="none" fill="currentColor" opacity="0.16" />
+                      {/* headrest */}
+                      <rect x="39" y="9" width="18" height="9" rx="4.5" strokeWidth="1.5" />
+                      {/* backrest */}
+                      <path d="M34 19 C32 40 32 52 36 60 L60 60 C64 52 64 40 62 19 C56 15 42 15 36 19 Z"
+                        fill="currentColor" opacity="0.08" />
+                      <path d="M36 19 C34 40 34 52 37 60 M60 19 C62 40 62 52 59 60" opacity="0.6" strokeWidth="1.4" />
+                      {/* lumbar curve */}
+                      <path d="M39 32 C44 28 52 28 57 32" opacity="0.5" strokeWidth="1.2" />
+                      {/* armrests */}
+                      <rect x="25" y="41" width="9" height="5" rx="2.5" strokeWidth="1.5" />
+                      <rect x="62" y="41" width="9" height="5" rx="2.5" strokeWidth="1.5" />
+                      <line x1="30" y1="46" x2="30" y2="60" opacity="0.7" strokeWidth="1.3" />
+                      <line x1="66" y1="46" x2="66" y2="60" opacity="0.7" strokeWidth="1.3" />
+                      {/* seat cushion */}
+                      <path d="M31 58 C24 59 24 67 31 68 L65 68 C72 67 72 59 65 58 Z"
+                        fill="currentColor" opacity="0.10" />
+                      <path d="M33 60 C28 61 28 66 34 66 L62 66 C68 66 68 61 63 60 Z" strokeWidth="1.3" />
+                      {/* gas lift */}
+                      <line x1="48" y1="67" x2="48" y2="77" strokeWidth="1.5" />
+                      {/* base */}
+                      <line x1="48" y1="77" x2="31" y2="87" strokeWidth="1.5" />
+                      <line x1="48" y1="77" x2="65" y2="87" strokeWidth="1.5" />
+                      <line x1="48" y1="77" x2="21" y2="83" strokeWidth="1.5" />
+                      <line x1="48" y1="77" x2="75" y2="83" strokeWidth="1.5" />
+                      {/* casters */}
+                      <circle cx="31" cy="88" r="1.7" stroke="none" fill="currentColor" />
+                      <circle cx="65" cy="88" r="1.7" stroke="none" fill="currentColor" />
+                      <circle cx="21" cy="84" r="1.7" stroke="none" fill="currentColor" />
+                      <circle cx="75" cy="84" r="1.7" stroke="none" fill="currentColor" />
                     </svg>
 
                     {/* Stamp */}
@@ -277,16 +307,63 @@ const Home = () => {
       <section className="bg-ink-950 text-paper-300">
         <div className="max-w-[1440px] mx-auto px-5 sm:px-8 lg:px-12 py-16 lg:py-24 grid lg:grid-cols-12 gap-12 items-center">
           <div className="lg:col-span-6 order-2 lg:order-1">
-            <div className="grid grid-cols-5 gap-3">
-              {[0, 1, 2, 3, 4].map(i => (
-                <div key={i} className={`${i % 2 ? 'mt-8' : ''} aspect-[3/4] bg-gradient-to-b ${i % 2 ? 'from-ink-800 to-ink-950' : 'from-ink-700 to-ink-900'} border border-ink-800 flex items-center justify-center`}>
-                  <svg width="34" height="34" viewBox="0 0 64 64" fill="none" stroke="currentColor" strokeWidth="1.6" className="text-paper-500/50" strokeLinecap="round" strokeLinejoin="round">
-                    <rect x="16" y="26" width="32" height="26" rx="3" />
-                    <line x1="26" y1="52" x2="22" y2="60" />
-                    <line x1="38" y1="52" x2="42" y2="60" />
-                  </svg>
-                </div>
-              ))}
+            <div className="grid grid-cols-6 gap-3 auto-rows-[92px]">
+              {/* 01 — Big workshop card */}
+              <div className="relative col-span-2 row-span-2 bg-ink-800 border border-ink-700 overflow-hidden p-5 flex flex-col justify-between group">
+                <div className="absolute inset-0 bg-[radial-gradient(70%_60%_at_25%_15%,rgba(216,168,126,0.18),transparent)]" />
+                <div className="absolute inset-y-0 right-0 w-px bg-ink-700" />
+                <span className="relative text-[10px] uppercase tracking-eyebrow text-paper-400">01 — The workshop</span>
+                <Hammer size={30} className="relative text-rust-400" />
+                <p className="relative font-display text-lg text-paper-50 leading-snug">
+                  Repairs that leave pieces<br />better than new.
+                </p>
+              </div>
+
+              {/* 02 — Upholstery */}
+              <div className="relative col-span-2 border border-ink-700 bg-gradient-to-b from-ink-900 to-ink-800 p-4 flex flex-col justify-between overflow-hidden">
+                <div className="absolute inset-0 opacity-40 bg-[repeating-linear-gradient(45deg,transparent_0_9px,rgba(239,233,223,0.05)_9px_10px)]" />
+                <span className="relative text-[10px] uppercase tracking-eyebrow text-paper-400">02 — Upholstery</span>
+                <Scissors size={24} className="relative text-paper-300" />
+                <p className="relative text-sm text-paper-200">Fabric, PU, mesh &amp; foam</p>
+              </div>
+
+              {/* 03 — Wood & polish */}
+              <div className="relative col-span-2 border border-ink-700 bg-gradient-to-b from-ink-900 to-ink-800 p-4 flex flex-col justify-between overflow-hidden">
+                <div className="absolute inset-0 opacity-40 bg-[repeating-linear-gradient(90deg,transparent_0_11px,rgba(239,233,223,0.05)_11px_12px)]" />
+                <span className="relative text-[10px] uppercase tracking-eyebrow text-paper-400">03 — Wood &amp; polish</span>
+                <Ruler size={24} className="relative text-paper-300" />
+                <p className="relative text-sm text-paper-200">Teak, sheesham &amp; finishing</p>
+              </div>
+
+              {/* 04 — Lift & base */}
+              <div className="relative col-span-2 border border-ink-700 bg-gradient-to-b from-ink-900 to-ink-800 p-4 flex flex-col justify-between overflow-hidden">
+                <div className="absolute inset-0 opacity-40 bg-[radial-gradient(rgba(239,233,223,0.07)_1px,transparent_1px)] bg-[size:12px_12px]" />
+                <span className="relative text-[10px] uppercase tracking-eyebrow text-paper-400">04 — Lift &amp; base</span>
+                <Wrench size={24} className="relative text-paper-300" />
+                <p className="relative text-sm text-paper-200">Gas lifts, casters, welding</p>
+              </div>
+
+              {/* 05 — On-site service */}
+              <div className="relative col-span-2 border border-ink-700 bg-gradient-to-b from-ink-900 to-ink-800 p-4 flex flex-col justify-between overflow-hidden">
+                <div className="absolute inset-0 opacity-40 bg-[repeating-linear-gradient(135deg,transparent_0_9px,rgba(239,233,223,0.05)_9px_10px)]" />
+                <span className="relative text-[10px] uppercase tracking-eyebrow text-paper-400">05 — On-site service</span>
+                <Truck size={24} className="relative text-paper-300" />
+                <p className="relative text-sm text-paper-200">We come to your office</p>
+              </div>
+
+              {/* 06 — Made to measure */}
+              <div className="relative col-span-3 border border-ink-700 bg-gradient-to-b from-ink-800 to-ink-900 p-5 flex items-end justify-between gap-4 overflow-hidden">
+                <span className="absolute top-4 left-5 text-[10px] uppercase tracking-eyebrow text-rust-400">06 — Made to measure</span>
+                <p className="absolute bottom-5 mt-2 font-display text-lg text-paper-50">Custom sizes, any order.</p>
+                <Layers size={26} className="absolute right-5 top-1/2 -translate-y-1/2 text-paper-300 shrink-0" />
+              </div>
+
+              {/* 07 — Contract work */}
+              <div className="relative col-span-3 border border-ink-700 bg-gradient-to-b from-ink-800 to-ink-900 p-5 flex items-end justify-between gap-4 overflow-hidden">
+                <span className="absolute top-4 left-5 text-[10px] uppercase tracking-eyebrow text-rust-400">07 — Contract work</span>
+                <p className="absolute bottom-5 mt-2 font-display text-lg text-paper-50">Bulk &amp; long-term partners.</p>
+                <Package size={26} className="absolute right-5 top-1/2 -translate-y-1/2 text-paper-300 shrink-0" />
+              </div>
             </div>
           </div>
 
