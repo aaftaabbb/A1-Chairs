@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Plus, Edit, Trash2, X, Loader2, ImagePlus, Palette, CheckCircle2 } from 'lucide-react';
 import api from '../../utils/api';
 import optimizeImage from '../../utils/imageUtils';
+import { compressFiles } from '../../utils/compressImage';
 import AdminPageHeader from './AdminPageHeader';
 import Loader from '../../components/Loader';
 import EmptyState from '../../components/EmptyState';
@@ -28,6 +29,7 @@ const AdminProducts = () => {
   const [editingId, setEditingId] = useState(null);
   const [form, setForm] = useState(emptyForm);
   const [saving, setSaving] = useState(false);
+  const [submitStage, setSubmitStage] = useState('');
   const [notice, setNotice] = useState('');
 
   const fetchData = async () => {
@@ -137,6 +139,26 @@ const AdminProducts = () => {
     setSaving(true);
 
     try {
+      const existingColors = [];
+      const newColors = [];
+      const rawColorFiles = [];
+      form.colors.forEach(r => {
+        if (!r.name.trim()) return;
+        if (r.file) {
+          newColors.push({ name: r.name.trim() });
+          rawColorFiles.push(r.file);
+        } else if (r.image) {
+          existingColors.push({ name: r.name.trim(), image: r.image });
+        }
+      });
+
+      setSubmitStage('compressing');
+      const [compressedImages, compressedColorFiles] = await Promise.all([
+        form.newImages.length ? compressFiles(form.newImages) : Promise.resolve([]),
+        rawColorFiles.length ? compressFiles(rawColorFiles) : Promise.resolve([]),
+      ]);
+
+      setSubmitStage('saving');
       const fd = new FormData();
       fd.append('name', form.name.trim());
       fd.append('category', form.category);
@@ -146,24 +168,10 @@ const AdminProducts = () => {
       fd.append('featured', String(form.featured));
       fd.append('inStock', String(form.inStock));
       fd.append('existingImages', JSON.stringify(form.existingImages));
-
-      const existingColors = [];
-      const newColors = [];
-      const colorFiles = [];
-      form.colors.forEach(r => {
-        if (!r.name.trim()) return;
-        if (r.file) {
-          newColors.push({ name: r.name.trim() });
-          colorFiles.push(r.file);
-        } else if (r.image) {
-          existingColors.push({ name: r.name.trim(), image: r.image });
-        }
-      });
       fd.append('existingColors', JSON.stringify(existingColors));
       fd.append('newColors', JSON.stringify(newColors));
-      colorFiles.forEach(file => fd.append('colorImages', file));
-
-      form.newImages.forEach(file => fd.append('images', file));
+      compressedColorFiles.forEach(file => fd.append('colorImages', file));
+      compressedImages.forEach(file => fd.append('images', file));
 
       if (editingId) {
         await api.put(`/admin/products/${editingId}`, fd);
@@ -179,6 +187,7 @@ const AdminProducts = () => {
       setError(err.response?.data?.message || 'Failed to save product');
     } finally {
       setSaving(false);
+      setSubmitStage('');
     }
   };
 
@@ -455,12 +464,20 @@ const AdminProducts = () => {
                 </label>
               </div>
 
-              <div className="flex gap-3 pt-2">
-                <button type="submit" disabled={saving} className="btn-primary disabled:opacity-60">
-                  {saving && <Loader2 size={16} className="mr-2 animate-spin" />}
-                  {saving ? 'Saving...' : (editingId ? 'Update Product' : 'Create Product')}
-                </button>
-                <button type="button" onClick={() => setShowForm(false)} className="btn-outline">Cancel</button>
+              <div className="flex flex-col gap-3 pt-2">
+                {saving && (
+                  <p className="text-xs text-gray-500 flex items-center gap-2">
+                    <Loader2 size={12} className="animate-spin" />
+                    {submitStage === 'compressing' ? 'Compressing photos…' : 'Uploading & saving…'}
+                  </p>
+                )}
+                <div className="flex gap-3">
+                  <button type="submit" disabled={saving} className="btn-primary disabled:opacity-60">
+                    {saving && <Loader2 size={16} className="mr-2 animate-spin" />}
+                    {saving ? 'Please wait…' : (editingId ? 'Update Product' : 'Create Product')}
+                  </button>
+                  <button type="button" onClick={() => setShowForm(false)} className="btn-outline">Cancel</button>
+                </div>
               </div>
             </form>
           </div>
